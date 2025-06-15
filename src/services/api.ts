@@ -6,17 +6,21 @@ import {
   PersonalizedMessageResponse,
   ApiResponse
 } from '../types';
+import config from '../utils/config';
 
 class ApiService {
   private api: AxiosInstance;
 
   constructor() {
     this.api = axios.create({
-      baseURL: 'http://localhost:6969/api/v1',
+      baseURL: config.API_URL,
       headers: {
         'Content-Type': 'application/json',
       },
     });
+    
+    // Log configuration in development
+    config.logConfig();
   }
 
   // Campaign API methods

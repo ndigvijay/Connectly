@@ -78,7 +78,11 @@ Make sure you have the following installed:
 
 ### Backend Connection
 
-The frontend is configured to connect to the backend at `http://localhost:6969`. Make sure your OutFlo backend is running before using the frontend.
+The frontend is configured to use environment variables for the backend URL:
+- **Production**: Uses the deployed backend URL from `.env` file
+- **Development**: Falls back to `http://localhost:6969` if no environment variable is set
+
+The app is currently configured to use the deployed backend at `https://outflo-backend-tsms.onrender.com/api/v1`.
 
 ## 📱 Usage Guide
 
@@ -142,14 +146,24 @@ The application uses a clean, modern design with:
 
 ### API Endpoint
 
-To change the backend URL, modify the `baseURL` in `src/services/api.ts`:
+The backend URL is configured via environment variables. To change it:
 
-```typescript
-this.api = axios.create({
-  baseURL: 'http://your-backend-url/api/v1',
-  // ...
-});
-```
+1. **Copy the example file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edit the `.env` file:**
+   ```env
+   REACT_APP_API_URL=https://your-backend-url.com/api/v1
+   ```
+
+3. **Or for local development:**
+   ```env
+   REACT_APP_API_URL=http://localhost:6969/api/v1
+   ```
+
+The API service automatically uses the environment variable with a fallback to localhost.
 
 ### Styling
 
