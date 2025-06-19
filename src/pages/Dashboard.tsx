@@ -50,8 +50,8 @@ const Dashboard: React.FC = () => {
       if (editingCampaign) {
         // Update existing campaign
         await apiService.updateCampaign(editingCampaign._id!, formData);
-        setCampaigns(prev => 
-          prev.map(c => 
+        setCampaigns((prev: Campaign[]) => 
+          prev.map((c: Campaign) => 
             c._id === editingCampaign._id 
               ? { ...c, ...formData } 
               : c
@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
       } else {
         // Create new campaign
         const newCampaign = await apiService.createCampaign(formData);
-        setCampaigns(prev => [newCampaign, ...prev]);
+        setCampaigns((prev: Campaign[]) => [newCampaign, ...prev]);
       }
 
       setShowForm(false);
@@ -84,8 +84,8 @@ const Dashboard: React.FC = () => {
       const newStatus = campaign.status === 'Active' ? 'Inactive' : 'Active';
       await apiService.updateCampaign(campaign._id!, { status: newStatus });
       
-      setCampaigns(prev => 
-        prev.map(c => 
+      setCampaigns((prev: Campaign[]) => 
+        prev.map((c: Campaign) => 
           c._id === campaign._id 
             ? { ...c, status: newStatus } 
             : c
@@ -104,7 +104,7 @@ const Dashboard: React.FC = () => {
 
     try {
       await apiService.deleteCampaign(campaign._id!);
-      setCampaigns(prev => prev.filter(c => c._id !== campaign._id));
+      setCampaigns((prev: Campaign[]) => prev.filter((c: Campaign) => c._id !== campaign._id));
     } catch (err) {
       console.error('Error deleting campaign:', err);
       setError('Failed to delete campaign. Please try again.');
@@ -112,11 +112,11 @@ const Dashboard: React.FC = () => {
   };
 
   const getActiveCampaignsCount = () => {
-    return campaigns.filter(c => c.status === 'Active').length;
+    return campaigns.filter((c: Campaign) => c.status === 'Active').length;
   };
 
   const getTotalLeadsCount = () => {
-    return campaigns.reduce((total, c) => total + c.leads.length, 0);
+    return campaigns.reduce((total: number, c: Campaign) => total + c.leads.length, 0);
   };
 
   if (isLoading) {
@@ -132,7 +132,7 @@ const Dashboard: React.FC = () => {
     <div className="dashboard">
       <div className="dashboard-header">
         <div className="dashboard-title">
-          <h1>Campaign Dashboard</h1>
+          <h1>Connectly Dashboard</h1>
           <p>Manage your LinkedIn outreach campaigns</p>
         </div>
         <button 

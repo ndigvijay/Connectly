@@ -1,6 +1,10 @@
-# OutFlo Frontend
+# Connectly Frontend
 
-A modern React + TypeScript frontend for the OutFlo Campaign Management System.
+A modern React + TypeScript frontend for the Connectly Campaign Management System.
+
+## 🌐 Deployed Application
+
+The frontend is deployed and accessible at: https://outflo-cyan.vercel.app/
 
 ## 🚀 Features
 
@@ -54,7 +58,7 @@ src/
 Make sure you have the following installed:
 - Node.js 16+ 
 - npm or yarn
-- OutFlo backend server running on `http://localhost:6969`
+- Connectly backend server running on `http://localhost:6969`
 
 ### Installation
 
