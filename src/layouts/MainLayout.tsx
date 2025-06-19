@@ -19,7 +19,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="header-content">
           <h1 className="logo">
             <span className="logo-icon">🌊</span>
-            OutFlo
+            Connectly
           </h1>
           <nav className="nav">
             <Link to="/" className={isActive('/')}>
