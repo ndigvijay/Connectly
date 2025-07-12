@@ -15,6 +15,9 @@ const MessageGenerator: React.FC = () => {
   const [generatedMessage, setGeneratedMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editedMessage, setEditedMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
 
   // Sample data for testing
   const sampleData: PersonalizedMessageRequest = {
@@ -87,11 +90,17 @@ const MessageGenerator: React.FC = () => {
     }
   };
 
+  const showToastMessage = () => {
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
+
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(generatedMessage);
-      // You could add a toast notification here
-      alert('Message copied to clipboard!');
+      showToastMessage();
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
       // Fallback for older browsers
@@ -101,12 +110,40 @@ const MessageGenerator: React.FC = () => {
       textArea.select();
       document.execCommand('copy');
       document.body.removeChild(textArea);
-      alert('Message copied to clipboard!');
+      showToastMessage();
     }
+  };
+
+  const handleEditMode = () => {
+    setIsEditMode(true);
+    setEditedMessage(generatedMessage);
+  };
+
+  const handleSaveEdit = () => {
+    setGeneratedMessage(editedMessage);
+    setIsEditMode(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditMode(false);
+    setEditedMessage('');
+  };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditedMessage(e.target.value);
   };
 
   return (
     <div className="message-generator">
+      {showToast && (
+        <div className="toast">
+          <div className="toast-content">
+            <span className="toast-icon">✓</span>
+            <span className="toast-message">Message copied to clipboard!</span>
+          </div>
+        </div>
+      )}
+      
       <div className="generator-header">
         <h2>LinkedIn Message Generator</h2>
         <p>Generate personalized LinkedIn outreach messages using AI</p>
@@ -144,7 +181,6 @@ const MessageGenerator: React.FC = () => {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
-                  placeholder="e.g., John Doe"
                 />
               </div>
 
@@ -156,7 +192,6 @@ const MessageGenerator: React.FC = () => {
                   name="job_title"
                   value={formData.job_title}
                   onChange={handleInputChange}
-                  placeholder="e.g., Software Engineer"
                 />
               </div>
             </div>
@@ -170,7 +205,6 @@ const MessageGenerator: React.FC = () => {
                   name="company"
                   value={formData.company}
                   onChange={handleInputChange}
-                  placeholder="e.g., TechCorp"
                 />
               </div>
 
@@ -182,7 +216,6 @@ const MessageGenerator: React.FC = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleInputChange}
-                  placeholder="e.g., San Francisco, CA"
                 />
               </div>
             </div>
@@ -194,7 +227,6 @@ const MessageGenerator: React.FC = () => {
                 name="summary"
                 value={formData.summary}
                 onChange={handleInputChange}
-                placeholder="e.g., Experienced software engineer with 5+ years in AI and machine learning..."
                 rows={4}
               />
             </div>
@@ -215,13 +247,43 @@ const MessageGenerator: React.FC = () => {
           <div className="message-header">
             <h3>Generated Message</h3>
             {generatedMessage && (
-              <button
-                type="button"
-                onClick={copyToClipboard}
-                className="btn-copy"
-              >
-                Copy to Clipboard
-              </button>
+              <div className="message-actions">
+                {isEditMode ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleSaveEdit}
+                      className="btn-save"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="btn-cancel"
+                    >
+                      Cancel
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleEditMode}
+                      className="btn-edit"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={copyToClipboard}
+                      className="btn-copy"
+                    >
+                      Copy to Clipboard
+                    </button>
+                  </>
+                )}
+              </div>
             )}
           </div>
 
@@ -234,10 +296,11 @@ const MessageGenerator: React.FC = () => {
             ) : generatedMessage ? (
               <div className="generated-message">
                 <textarea
-                  value={generatedMessage}
-                  readOnly
+                  value={isEditMode ? editedMessage : generatedMessage}
+                  onChange={isEditMode ? handleMessageChange : undefined}
+                  readOnly={!isEditMode}
                   rows={8}
-                  className="message-text"
+                  className={`message-text ${isEditMode ? 'edit-mode' : ''}`}
                 />
               </div>
             ) : (
